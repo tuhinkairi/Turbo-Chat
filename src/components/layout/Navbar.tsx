@@ -2,16 +2,20 @@
 import React, { useState } from 'react';
 import Link from 'next/link'; // This is specific to Next.js, for regular React, use <a> instead.
 import Title from '../ui/Title';
+import { usePathname } from 'next/navigation';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const path = usePathname()
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
-
+  
   return (
-    <nav className="bg-yellow-50 shadow-md">
+    <>
+    { !["login", "register"].some(route => path.includes(route)) && (
+
+      <nav className="bg-yellow-50 shadow-md">
       <div className="w-screen mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center justify-between gap-5 w-full">
@@ -97,7 +101,9 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
       </div>
-    </nav>
+    </nav>)
+  }
+    </>
   );
 };
 

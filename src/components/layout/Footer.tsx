@@ -1,9 +1,13 @@
+"use client"
 import React from 'react';
 import { EnvelopeIcon, PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import { usePathname } from 'next/navigation';
 
 const Footer: React.FC = () => {
-  return (
+  const path = usePathname()
+  return (<>
+  {!["login", "register"].some(route => path.includes(route)) &&
     <footer className="bg-yellow-50 pt-10 border-t border-t-yellow-600">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -64,6 +68,9 @@ const Footer: React.FC = () => {
           &copy; {new Date().getFullYear()} Chatter. All rights reserved.
         </div>
     </footer>
+  }
+  </>
+
   );
 };
 
