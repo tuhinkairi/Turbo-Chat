@@ -1,17 +1,17 @@
-import React from 'react';
+// dashboard/layout.tsx
+import { ReactNode } from 'react';
+import Sidebar from './@sidebar/page';
 
-const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="dashboard-layout">
-      <header className="bg-gray-800 text-white p-4">
-        <h1 className="text-2xl">Dashboard</h1>
-      </header>
-      <main className="p-4">
+    <div className="flex h-screen">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <div className="flex-1 bg-gray-100 p-4">
         {children}
-      </main>
-      <footer className="bg-gray-800 text-white p-4 text-center">
-        &copy; {new Date().getFullYear()} Dashboard. All rights reserved.
-      </footer>
+      </div>
     </div>
   );
 };
