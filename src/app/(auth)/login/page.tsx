@@ -9,7 +9,7 @@ import { CHECK_USER } from '../../../utils/Apis'
 import { useRouter } from 'next/navigation';
 import ToastNotify from '@/components/ui/ToastNotify';
 import { useDispatch } from 'react-redux';
-import { setCredentials, logIn, test } from '@/Store/Features/LoginSlice';
+// import { setCredentials, logIn, test } from '@/Store/Features/LoginSlice';
 
 
 
@@ -27,34 +27,56 @@ const LoginForm = () => {
     message: "default",
     type: "success"
   });
-  dispatch(test())
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Dispatching the credentials to the Redux store
-    dispatch(setCredentials({ email, password }));
-    dispatch(logIn());
-    console.log('Login submitted:', { email, password });
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const { data } = await axios.post(CHECK_USER, { email , password})
+
+    if (!data.status) {
+      setNotify({
+        state: true,
+        message: data.msg,
+        type: 'error'
+      })
+      setTimeout(() => {
+
+        router.push('/register')
+      }, 3500);
+    }else{
+      // check the credencials for the password
+    }
+
+    // dispatch(setCredentials({ email, password }));
+    // dispatch(logIn());
+    // console.log('Login submitted:', { email, password });
   };
 
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      const { user: { displayName: name, email, photoURL: profileImage } } = await signInWithPopup(FirebaseAuth, provider);
+      const { user } = await signInWithPopup(FirebaseAuth, provider);
+      const { displayName: name, email } = user;
+
+      console.log(user)
       const { data } = await axios.post(CHECK_USER, { email })
 
       if (!data.status) {
-        console.log(data.status)
         setNotify({
           state: true,
           message: data.msg,
           type: 'error'
         })
-        router.push('/register')
+
+        setTimeout(() => {
+
+          router.push('/register')
+        }, 3500);
       }
       else {
-        console.log(name, email, profileImage)
-        dispatch(setCredentials(name, email, profileImage));
-        dispatch(logIn());
+        console.log(name, email)
+        // set up the states
+        // dispatch(setCredentials(name, email, avatar));
+        // dispatch(logIn());
+
         // mathcing the login
         router.push('/dashboard')
       }
@@ -121,7 +143,7 @@ const LoginForm = () => {
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
 
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" >
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   Email
@@ -163,7 +185,7 @@ const LoginForm = () => {
               </div>
 
               <button
-                type="submit"
+                onClick={(e) => handleSubmit(e)}
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Sign In

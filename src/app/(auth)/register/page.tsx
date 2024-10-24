@@ -1,22 +1,54 @@
 "use client"
+import { logIn, setCredentials } from '@/Store/Features/LoginSlice';
+import { useAppDispatch } from '@/Store/hook';
+import { FirebaseAuth } from '@/utils/FirebaseConfig';
+import { signInWithPopup, GoogleAuthProvider } from '@firebase/auth';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+
+
+
+
+
 
 const RegisterForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useAppDispatch();
 
+  const router = useRouter()
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Add your registration logic here
     console.log('Register submitted:', { name, email, password });
   };
 
-  const handleGoogleRegister = () => {
+
+
+
+  const handleGoogleRegister = async () => {
     // Add your Google registration logic here
+    const provider = new GoogleAuthProvider();
+    try {
+        const { user } = await signInWithPopup(FirebaseAuth, provider);
+        const { displayName: name, email, photoURL: avatar } = user;      
+        // Correctly wrap the payload in an object
+        dispatch(setCredentials({ email, name, avatar }));
+        dispatch(logIn());
+
+        // Matching the login
+        router.push('/onboard');
+    } catch (error) {
+        console.error('Error during Google login:', error);
+    }
+
     console.log('Google register clicked');
   };
+
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-50">

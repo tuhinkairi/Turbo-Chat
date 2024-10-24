@@ -3,14 +3,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface LoginState {
   name: string;
   email: string;
-  url: string;
+  avatar: string;
   isLoggedIn: boolean;
 }
 
 const initialState: LoginState = {
   name: "",
   email: "",
-  url: "",
+  avatar: "",
   isLoggedIn: false,
 };
 
@@ -20,11 +20,11 @@ const loginSlice = createSlice({
   reducers: {
     setCredentials: (
       state,
-      action: PayloadAction<{ email: string; name: string; url: string }>
+      action: PayloadAction<{ email: string; name: string; avatar: string }>
     ) => {
       state.email = action.payload.email;
       state.name = action.payload.name;
-      state.url = action.payload.url;
+      state.avatar = action.payload.avatar;
     },
     logIn: (state) => {
       state.isLoggedIn = true;
@@ -33,7 +33,7 @@ const loginSlice = createSlice({
       state.isLoggedIn = false;
       state.email = "";
       state.name = "";
-      state.url = "";
+      state.avatar = "";
     },
     test: () => {
       console.log("running");

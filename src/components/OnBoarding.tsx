@@ -1,14 +1,25 @@
 'use client'
 import React, { useState } from 'react';
 import { Camera, Upload, Check, ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useAppSelector,useAppDispatch } from '@/Store/hook';
+import { logOut } from '@/Store/Features/LoginSlice';
 
 const OnboardingFlow = () => {
+  const router = useRouter()
+  const userData = useAppSelector((state)=>state.login);
+  console.log(userData)
+  const dispatch = useAppDispatch()
+  if(!userData.isLoggedIn){
+    router.push('/login')
+  }
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    username: '',
+    username: userData.name,
     about: '',
     avatarFile: null,
-    avatarPreview: null
+    avatarPreview: userData.avatar
   });
 
   const handleFileChange = (e) => {
@@ -30,6 +41,11 @@ const OnboardingFlow = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your API call here to save user data
+    console.log(userData)
+
+    dispatch(logOut())
+    
+    
     console.log('Form submitted:', formData);
   };
 
@@ -42,7 +58,7 @@ const OnboardingFlow = () => {
       case 1:
         return formData.username.length >= 3;
       case 2:
-        return formData.avatarFile !== null;
+        return  formData.avatarPreview !==null || formData.avatarFile !== null;
       case 3:
         return formData.about.length >= 10;
       default:
