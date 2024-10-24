@@ -41,7 +41,7 @@ const Navbar: React.FC = () => {
                   <span>Contact</span>
                   <span className='group-hover:w-full w-0 transition-all  bottom-0 left-0 absolute h-1 bg-yellow-600'></span>
               </Link>
-              <Link href="/login" className="aboslute right-0 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+              <Link target='_blank' href="/login" className="aboslute right-0 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
             Login
           </Link>
             </div>

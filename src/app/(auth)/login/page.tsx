@@ -43,13 +43,13 @@ const LoginForm = () => {
       const { data } = await axios.post(CHECK_USER, { email })
 
       if (!data.status) {
+        console.log(data.status)
         setNotify({
           state: true,
           message: data.msg,
           type: 'error'
         })
-        // router.push('/register')
-        router.push('/onboard')
+        router.push('/register')
       }
       else {
         console.log(name, email, profileImage)
