@@ -1,8 +1,13 @@
 "use client"
-import { signInWithPopup,GoogleAuthProvider } from '@firebase/auth';
-import {FirebaseAuth} from '../../../utils/FirebaseConfig'
+import { signInWithPopup, GoogleAuthProvider } from '@firebase/auth';
+import { FirebaseAuth } from '../../../utils/FirebaseConfig'
 import Link from 'next/link';
 import React, { useState } from 'react';
+import axios from 'axios';
+// apis
+import { CHECK_USER } from '../../../utils/Apis'
+
+
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -13,22 +18,26 @@ const LoginForm = () => {
     // Add your login logic here
     console.log('Login submitted:', { email, password });
   };
-  
+
+  // console.log(CHECK_USER)
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
-  try {
-    const { user: { displayName: name, email, photoURL: profileImage,accessToken:token } } = await signInWithPopup(FirebaseAuth, provider);
-    console.log('Google login successful:', {name,email,profileImage,token});
-  } catch (error) {
-    console.error('Error during Google login:', error);
-  }
+    try {
+      const { user: { displayName: name, email, photoURL: profileImage, accessToken: token } } = await signInWithPopup(FirebaseAuth, provider);
+      const { data } = await axios.post(CHECK_USER, { email })
+
+      console.log({data})
+      
+    } catch (error) {
+      console.error('Error during Google login:', error);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-50">
       {/* Two-column layout */}
       <div className="flex flex-col md:flex-row w-full max-w-6xl shadow-lg rounded-lg overflow-hidden">
-        
+
         {/* Left Column: Visual or Welcome Section */}
         <div className="hidden md:flex md:w-1/2 bg-blue-600 items-center justify-center p-8">
           <div className="text-center text-white">
