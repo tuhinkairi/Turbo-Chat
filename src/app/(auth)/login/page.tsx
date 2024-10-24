@@ -6,28 +6,58 @@ import React, { useState } from 'react';
 import axios from 'axios';
 // apis
 import { CHECK_USER } from '../../../utils/Apis'
+import { useRouter } from 'next/navigation';
+import ToastNotify from '@/components/ui/ToastNotify';
+import { useDispatch } from 'react-redux';
+import { setCredentials, logIn, test } from '@/Store/Features/LoginSlice';
+
 
 
 
 const LoginForm = () => {
+
+  const dispatch = useDispatch();
+
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const router = useRouter()
+  const [notify, setNotify] = useState({
+    state: false,
+    message: "default",
+    type: "success"
+  });
+  dispatch(test())
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Add your login logic here
+    // Dispatching the credentials to the Redux store
+    dispatch(setCredentials({ email, password }));
+    dispatch(logIn());
     console.log('Login submitted:', { email, password });
   };
 
-  // console.log(CHECK_USER)
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      const { user: { displayName: name, email, photoURL: profileImage, accessToken: token } } = await signInWithPopup(FirebaseAuth, provider);
+      const { user: { displayName: name, email, photoURL: profileImage } } = await signInWithPopup(FirebaseAuth, provider);
       const { data } = await axios.post(CHECK_USER, { email })
 
-      console.log({data})
-      
+      if (!data.status) {
+        setNotify({
+          state: true,
+          message: data.msg,
+          type: 'error'
+        })
+        // router.push('/register')
+        router.push('/onboard')
+      }
+      else {
+        console.log(name, email, profileImage)
+        dispatch(setCredentials(name, email, profileImage));
+        dispatch(logIn());
+        // mathcing the login
+        router.push('/dashboard')
+      }
     } catch (error) {
       console.error('Error during Google login:', error);
     }
@@ -35,6 +65,7 @@ const LoginForm = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-50">
+      {notify.state && <ToastNotify message={notify.message} type={notify.type} />}
       {/* Two-column layout */}
       <div className="flex flex-col md:flex-row w-full max-w-6xl shadow-lg rounded-lg overflow-hidden">
 

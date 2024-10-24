@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-
+import StateProvider from "@/Store/StateProvider";
 
 export const metadata: Metadata = {
   title: "Turbo Chat",
@@ -13,11 +13,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-       
-        {children}
-      </body>
-    </html>
+    <StateProvider>
+
+
+        <html lang="en  ">
+        <body>
+          {children}
+        </body>
+      </html>
+      </StateProvider>
   );
 }
