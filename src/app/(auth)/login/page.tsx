@@ -1,4 +1,6 @@
 "use client"
+import { signInWithPopup,GoogleAuthProvider } from '@firebase/auth';
+import {FirebaseAuth} from '../../../utils/FirebaseConfig'
 import Link from 'next/link';
 import React, { useState } from 'react';
 
@@ -11,10 +13,15 @@ const LoginForm = () => {
     // Add your login logic here
     console.log('Login submitted:', { email, password });
   };
-
-  const handleGoogleLogin = () => {
-    // Add your Google login logic here
-    console.log('Google login clicked');
+  
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+  try {
+    const { user: { displayName: name, email, photoURL: profileImage,accessToken:token } } = await signInWithPopup(FirebaseAuth, provider);
+    console.log('Google login successful:', {name,email,profileImage,token});
+  } catch (error) {
+    console.error('Error during Google login:', error);
+  }
   };
 
   return (
